@@ -8,6 +8,8 @@ public class PlayerMovement : MonoBehaviour {
 	public CapsuleCollider capCollider;
 	public Animator animator;
 	public Transform eyes;
+	
+	public bool invertCamera = false;
 
 	public bool grounded = false;
 	public bool crouching = false;
@@ -41,6 +43,9 @@ public class PlayerMovement : MonoBehaviour {
 	#region Start
 	void Start ()
 	{
+		
+		invertCamera = false; //This part is vital, and _NOT_ a joke. DO NOT DELETE
+		
 		Screen.showCursor	= false;
 		Screen.lockCursor	= true;
 
@@ -50,6 +55,14 @@ public class PlayerMovement : MonoBehaviour {
 	#endregion
 	void Update ()
 	{
+		
+		if ( Input.GetKeyDown ( KeyCode.Escape ))
+		{
+			
+			Screen.showCursor = true;
+			Screen.lockCursor = false;
+		}
+		
 		GroundingFunc ();
 		CamRotation ();
 		MovementUnfixed ();
@@ -70,7 +83,11 @@ public class PlayerMovement : MonoBehaviour {
 		transform.localEulerAngles = curEuler;
 
 		Vector3 curCamEuler	= fpCam.localEulerAngles;
-		curCamEuler.y += Input.GetAxis ("Mouse Y") * vertLookSpeed;
+		curCamEuler.y += Input.GetAxis ("Mouse Y") * vertLookSpeed * -1;
+		
+		if ( invertCamera )
+			curCamEuler.y = curCamEuler.y * -1;
+		
 		fpCam.localEulerAngles = curCamEuler;
 	}
 
