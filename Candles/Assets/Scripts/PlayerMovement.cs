@@ -7,6 +7,7 @@ public class PlayerMovement : MonoBehaviour {
 	public Transform fpCam;
 	public CapsuleCollider capCollider;
 	public Animator animator;
+	public Transform eyes;
 
 	public bool grounded = false;
 	public bool crouching = false;
@@ -14,11 +15,14 @@ public class PlayerMovement : MonoBehaviour {
 	public float maxSlope = 45;	
 	public float jumpHeight = 1.5f;
 
+	float moveSpeedBase;
+	float maxVelocityChangeBase;
 	public float moveSpeed	= 10;
 	public float maxVelocityChange	= 10;
 	public float movementMultiplyerBase	= 1;
 	public float airRatio	= 0.1f;
 	public float sprintRatio = 1.5f;
+	public float crouchRatio = 0.5f;
 	float movementMultiplyer;
 	float velocityDenom;
 	public float horLookSpeed = 10f;
@@ -29,6 +33,9 @@ public class PlayerMovement : MonoBehaviour {
 	float standHeight = 1.85f;
 	float targHeight = 1.85f;
 	public float croutchHeightAllowence = 0.1f;
+	float contactTime = 0.075f;
+	public bool groundContact = false;
+	public float baseContactTime = 0.075f;
 
 	#endregion
 	#region Start
@@ -36,17 +43,24 @@ public class PlayerMovement : MonoBehaviour {
 	{
 		Screen.showCursor	= false;
 		Screen.lockCursor	= true;
+
+		moveSpeedBase	= moveSpeed;
+		maxVelocityChangeBase = maxVelocityChange;
 	}
 	#endregion
 	void Update ()
 	{
+		GroundingFunc ();
 		CamRotation ();
 		MovementUnfixed ();
+		AnimationFunc ();
+//		Debug.Log (Vector3.Angle (fpCam.forward, -eyes.right));
 	}
 
 	void FixedUpdate ()
 	{
 		MovementFixed ();
+//		Debug.Log (rigidbody.velocity.magnitude);
 	}
 
 	void CamRotation ()
@@ -69,23 +83,27 @@ public class PlayerMovement : MonoBehaviour {
 			newVel.y		= jumpVel;
 			rigidbody.velocity	= newVel;
 		}
-		if (Input.GetButton("Crouch"))
+		if (Input.GetButton("Crouch") && !Input.GetButton ("Sprint"))
 		{
 			shouldCroutch = true;
+			movementMultiplyer	= movementMultiplyerBase * crouchRatio;
+			moveSpeed			= moveSpeedBase	* crouchRatio;
+			maxVelocityChange	= maxVelocityChangeBase * crouchRatio;
 		}
-		else
-		{
-			shouldCroutch = false;
-		}
-		if (Input.GetButton ("Sprint"))
+		if (Input.GetButton ("Sprint") && !Input.GetButton ("Crouch"))
 		{
 			sprinting = true;
 			movementMultiplyer	= movementMultiplyerBase * sprintRatio;
+			moveSpeed			= moveSpeedBase	* sprintRatio;
+			maxVelocityChange	= maxVelocityChangeBase * sprintRatio;
 		}
-		else
+		if (!Input.GetButton ("Sprint") && !Input.GetButton ("Crouch"))
 		{
 			sprinting = false;
+			shouldCroutch = false;
 			movementMultiplyer = movementMultiplyerBase;
+			moveSpeed			= moveSpeedBase;
+			maxVelocityChange	= maxVelocityChangeBase;
 		}
 		Vector3 curCapCenter = capCollider.center;
 		float	heightTargDif = Mathf.Abs (capCollider.height - targHeight);
@@ -146,21 +164,56 @@ public class PlayerMovement : MonoBehaviour {
 		//Debug.Log (movementMultiplyer);
 	}
 	#endregion
+
+	void AnimationFunc ()
+	{
+		Vector3 animVelHor = rigidbody.velocity;
+		animVelHor.y	= 0;
+		float velHor = animVelHor.magnitude;
+
+		animator.SetFloat	("VelHor", velHor);
+		animator.SetBool	("Grounded", grounded);
+		animator.SetBool	("Crouching", crouching);
+	}
+
 	void OnCollisionStay (Collision collision)
 	{
-		Vector3 contactPoint = collision.contacts [0].point;
-		if (Vector3.Angle (-(contactPoint - (transform.position + transform.up)).normalized, Vector3.up) <= maxSlope)
+//		Vector3 contactPoint = collision.contacts [0].point;
+/*		if (Vector3.Angle (-(contactPoint - (transform.position + transform.up)).normalized, Vector3.up) <= maxSlope)
 		{
-			grounded = true;
+//			grounded = true;
+			groundContact = true;
+		}	*/
+		foreach (ContactPoint contact in collision.contacts)
+		{
+			if (Vector3.Angle(contact.normal, Vector3.up) < maxSlope)
+			{
+				groundContact	= true;
+			}
 		}
-//		for (ContactPoint contact in collision.contacts)
-//		{
-
-//		}
 	}
 
 	void OnCollisionExit ()
 	{
-		grounded = false;
+//		grounded = false;
+		groundContact = false;
+	}
+
+	void GroundingFunc ()
+	{
+		if (groundContact)
+		{
+			contactTime	= baseContactTime;		
+			grounded	= true;
+		}
+		else
+		{
+			contactTime	-= Time.deltaTime;
+			
+			if (contactTime <= 0)
+			{
+				grounded	= false;
+			}
+		}
 	}
 }
