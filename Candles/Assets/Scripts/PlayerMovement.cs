@@ -14,24 +14,24 @@ public class PlayerMovement : MonoBehaviour {
 	public bool grounded = false;
 	public bool crouching = false;
 	public bool sprinting = false;
-	public float maxSlope = 45;	
+	public float maxSlope = 5;	
 	public float jumpHeight = 1.5f;
 
 	float moveSpeedBase;
 	float maxVelocityChangeBase;
-	public float moveSpeed	= 10;
-	public float maxVelocityChange	= 10;
+	public float moveSpeed	= 7.5f;
+	public float maxVelocityChange	= 7.5f;
 	public float movementMultiplyerBase	= 1;
-	public float airRatio	= 0.1f;
+	public float airRatio	= 0.025f;
 	public float sprintRatio = 1.5f;
 	public float crouchRatio = 0.5f;
 	float movementMultiplyer;
 	float velocityDenom;
-	public float horLookSpeed = 10f;
-	public float vertLookSpeed = 10f;
+	public float horLookSpeed = 20;
+	public float vertLookSpeed = 20;
 	bool shouldCroutch = false;
-	public float croutchTime = 0.5f;
-	public float croutchHeight = 0.5f;
+	public float croutchTime = 0.25f;
+	public float croutchHeight = 0.9f;
 	float standHeight = 1.85f;
 	float targHeight = 1.85f;
 	public float croutchHeightAllowence = 0.1f;
@@ -76,17 +76,17 @@ public class PlayerMovement : MonoBehaviour {
 	void CamRotation ()
 	{
 		Vector3 curEuler	= transform.localEulerAngles;
-		curEuler.y += Input.GetAxis ("Mouse X") * horLookSpeed;
+		curEuler.y += Input.GetAxis ("Mouse X") * horLookSpeed * Time.deltaTime;
 		transform.localEulerAngles = curEuler;
 
 		Vector3 curCamEuler	= fpCam.localEulerAngles;
 		if (invertCamera )
 		{
-			curCamEuler.y += Input.GetAxis ("Mouse Y") * vertLookSpeed * -1;
+			curCamEuler.y += Input.GetAxis ("Mouse Y") * vertLookSpeed * -1 * Time.deltaTime;
 		}
 		else
 		{
-			curCamEuler.y += Input.GetAxis ("Mouse Y") * vertLookSpeed * 1;
+			curCamEuler.y += Input.GetAxis ("Mouse Y") * vertLookSpeed * 1 * Time.deltaTime;
 		}
 //		if ( invertCamera )
 //			curCamEuler.y = curCamEuler.y * -1;
