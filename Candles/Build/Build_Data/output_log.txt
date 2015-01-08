@@ -16,7 +16,7 @@ Platform assembly: C:\Users\Nick\Documents\GitHub\codename-candles\Candles\Build
 Loading C:\Users\Nick\Documents\GitHub\codename-candles\Candles\Build\Build_Data\Managed\Pathfinding.Ionic.Zip.Reduced.dll into Unity Child Domain
 Platform assembly: C:\Users\Nick\Documents\GitHub\codename-candles\Candles\Build\Build_Data\Managed\Pathfinding.JsonFx.dll (this message is harmless)
 Loading C:\Users\Nick\Documents\GitHub\codename-candles\Candles\Build\Build_Data\Managed\Pathfinding.JsonFx.dll into Unity Child Domain
-- Completed reload, in  0.081 seconds
+- Completed reload, in  0.226 seconds
 desktop: 1920x1080 60Hz; virtual: 3200x1080 at 0,0
 <RI> Initializing input.
 <RI> Input initialized.

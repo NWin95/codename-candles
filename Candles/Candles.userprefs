@@ -1,8 +1,8 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\RaycastingMeasure.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="..\..\..\FPS\Assets\Weapons.cs">
     <Files>
-      <File FileName="Assets\RaycastingMeasure.cs" Line="9" Column="13" />
+      <File FileName="..\..\..\FPS\Assets\Weapons.cs" Line="21" Column="28" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
